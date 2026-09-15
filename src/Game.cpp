@@ -30,6 +30,7 @@ void Game::run() {
     while (window_.isOpen()) {
         float frametime = clock_.restart().asSeconds();
         accumulator_ += frametime;
+        //事件处理
         while (auto event = window_.pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
                 window_.close();
@@ -111,7 +112,10 @@ void Game::run() {
                 }
             }
         }
+
+        //控制器生成意图
         controllersUpdate();
+
         while (accumulator_ >= fixed_dt) {
             controllersWork();
             fixedUpDate(fixed_dt);
@@ -121,6 +125,8 @@ void Game::run() {
         float alpha = accumulator_ / fixed_dt;
         toScreen(alpha, frametime);
         draw();
+
+        //处理信息显示
         // 帧率和所有游戏相关的ui要在最顶层打印
         updateFPS();
         if (show_details_) {

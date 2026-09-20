@@ -6,6 +6,7 @@
 #include "../core/Renderable.hpp"
 #include "../animation/Animation.hpp"
 #include <vector>
+#include <iostream>
 
 /**
  * Actor
@@ -28,6 +29,7 @@ private:
     // 动画系统
     std::vector<Animation> animations_;
     Animation* current_animation_ = nullptr;
+    sf::Vector2i facing_ = {0, 1};    // 静止时保留的最后朝向，8 方向（默认朝下）
 
 public:
     Actor(sf::Vector2f center, sf::Vector2f halfsize, std::filesystem::path texture_path);
@@ -49,7 +51,8 @@ public:
     void accelerate(sf::Vector2f acceleration);
 
     /// 添加一个动画对象，由 Actor 统一管理
-    void addAnimation(AnimationState state,
+    void addAnimation(std::filesystem::path texture_path,
+                      AnimationState state,
                       sf::Vector2i direction,
                       int frame_total,
                       int frame_start,
@@ -104,6 +107,10 @@ public:
             dir += sf::Vector2i(0, 1);
         } else if (velocity_.y < 0.f) {
             dir += sf::Vector2i(0, -1);
+        }
+        // 静止时返回最后朝向
+        if (dir == sf::Vector2i(0, 0)) {
+            return facing_;
         }
         return dir;
     }

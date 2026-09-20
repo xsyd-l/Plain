@@ -17,10 +17,10 @@ namespace CharacterID {
 */
 class Character : public Actor {
 private:
-    int health_;
-    int damage_;
-    sf::Vector2f damagerange_;
-    float attackCoolDown_;
+    int health_ = 100;                  // 血量，构造时初始化，避免堆上残留垃圾值
+    int damage_ = 10;                   // 伤害
+    sf::Vector2f damagerange_ = {50.f, 0.8f};  // {攻击距离, 角度上限(弧度≈46°)}
+    float attackCoolDown_ = 0.f;        // 攻击冷却，初版从未初始化
     float attackCoolDownMax_ = 0.3f;
     bool isAttacking_ = false;
 public:

@@ -1,7 +1,6 @@
 #pragma once
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
-#include <filesystem>
 
 /// 动画状态 —— 每个 Animation 对象只管理一种状态下的纹理帧
 enum class AnimationState {
@@ -17,7 +16,7 @@ enum class AnimationState {
 class Animation {
 private:
     sf::Sprite&   sprite_;
-    sf::Texture   texture_;        // 每个动画持有自己的纹理
+    sf::Texture&  texture_;
     sf::Vector2f   foothold_;      // 落脚点坐标，相对于纹理左上角
     AnimationState state_;          // 本动画对应的角色状态
     sf::Vector2i   direction_;     // 动画对应的方向副本
@@ -30,7 +29,7 @@ private:
     sf::Vector2f   scale_factor_;
 public:
     Animation(sf::Sprite& sprite,
-              std::filesystem::path texture_path,
+              sf::Texture& texture,
               AnimationState state,
               sf::Vector2i direction,
               int frame_total,

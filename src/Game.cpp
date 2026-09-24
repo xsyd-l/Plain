@@ -5,6 +5,8 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "../include/core/collision.hpp"
+#include "../include/spark/Spark.hpp"
+#include <functional>
 
 Game::Game(sf::RenderWindow &window):window_(window) {
     worldView_.setSize(sf::Vector2f(WORLD_WIDTH, WORLD_HEIGHT));
@@ -16,27 +18,32 @@ Game::Game(sf::RenderWindow &window):window_(window) {
 }
 
 void Game::run() {
-    // 创建玩家角色,添加到相关管理（弃用旧纹理 player.png，改用 8 套方向动画）
-    auto character = std::make_unique<Character>(sf::Vector2f{400.f, 300.f}, 8.f, "./texture/idle_test_down.png");
+    // 创建玩家角色,添加到相关管理
+    auto character = std::make_unique<Character>(sf::Vector2f{400.f, 300.f}, 8.f, "./texture/player.png");
+    character->setFootHold(sf::Vector2f(16.f, 32.f));
     Character* character_ptr = character.get();
-    character_ptr->setFootHold(sf::Vector2f(16.f, 32.f));
-    // 待机动画（四方向，纹理自带方向，无需缩放翻转）
-    character_ptr->addAnimation("./texture/idle_test_down.png",  AnimationState::IDLE,   { 0,  1}, 8, 0, 7, 0.2f,  {1.f, 1.f}, {16.f, 32.f});
-    character_ptr->addAnimation("./texture/idle_test_up.png",    AnimationState::IDLE,   { 0, -1}, 8, 0, 7, 0.2f,  {1.f, 1.f}, {16.f, 32.f});
-    character_ptr->addAnimation("./texture/idle_test_left.png",  AnimationState::IDLE,   {-1,  0}, 8, 0, 7, 0.2f,  {1.f, 1.f}, {16.f, 32.f});
-    character_ptr->addAnimation("./texture/idle_test_right.png", AnimationState::IDLE,   { 1,  0}, 8, 0, 7, 0.2f,  {1.f, 1.f}, {16.f, 32.f});
-    // 移动动画（四方向）
-    character_ptr->addAnimation("./texture/move_test_down.png",  AnimationState::MOVING, { 0,  1}, 8, 0, 7, 0.15f, {1.f, 1.f}, {16.f, 32.f});
-    character_ptr->addAnimation("./texture/move_test_up.png",    AnimationState::MOVING, { 0, -1}, 8, 0, 7, 0.15f, {1.f, 1.f}, {16.f, 32.f});
-    character_ptr->addAnimation("./texture/move_test_left.png",  AnimationState::MOVING, {-1,  0}, 8, 0, 7, 0.15f, {1.f, 1.f}, {16.f, 32.f});
-    character_ptr->addAnimation("./texture/move_test_right.png", AnimationState::MOVING, { 1,  0}, 8, 0, 7, 0.15f, {1.f, 1.f}, {16.f, 32.f});
+    character_ptr->addAnimation(AnimationState::IDLE, {0, 0}, 5, 0, 0, 0.2f, {1.f, 1.f}, {16.f, 32.f});
+    character_ptr->addAnimation(AnimationState::MOVING,{1, 0}, 5, 0, 4, 0.2f, {1.f, 1.f}, {16.f, 32.f});//向右移动动画
+    character_ptr->addAnimation(AnimationState::MOVING,{-1, 0}, 5, 0, 4, 0.2f, {-1.f, 1.f}, {16.f, 32.f});//向下移动动画
     actors_.push_back(std::move(character));
     renderables_.push_back(character_ptr); 
     controllers_.push_back(std::make_unique<PlayerController>(character_ptr, window_));
     
+    // 创建文字提示SoA
+    SparkSoA sparkSoA("./fonts/AliPuHui.ttf");
+    // 暴露弹幕添加指针（使用 lambda 以确保类型匹配）
+    spawnSpark = [&sparkSoA](SparkType type, std::string content) {
+        sparkSoA.spawnSpark(type, content);
+    };
+
     while (window_.isOpen()) {
         float frametime = clock_.restart().asSeconds();
         accumulator_ += frametime;
+        // frametime起作用的地点：
+        // 1、物理的帧位置插值
+        // 2、动画的帧选择
+        // 3、数字弹幕的运动状态更新
+        
         //事件处理
         while (auto event = window_.pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
@@ -120,7 +127,7 @@ void Game::run() {
             }
         }
 
-        // 控制器生成意图
+        //控制器生成意图
         controllersUpdate();
 
         while (accumulator_ >= fixed_dt) {
@@ -130,12 +137,18 @@ void Game::run() {
             accumulator_ -= fixed_dt;
         }
         float alpha = accumulator_ / fixed_dt;
-        // 处理插值和精灵图显示
         toScreen(alpha, frametime);
         draw();
 
+        // 每SPARK_UPDATE_DT的时间更新一次弹幕的运动状态，采用插值的方式
+        sparkSoA.accumulator_ += frametime;
+        while (sparkSoA.accumulator_ >= SPARK_UPDATE_DT) {
+            sparkSoA.accumulator_ -= SPARK_UPDATE_DT;
+            
+        }
+
         // 处理信息显示
-        // 帧率和所有游戏相关的ui要在最顶层打印
+        // 帧率和所有游戏参数相关的ui要在最顶层打印
         updateFPS();
         if (show_details_) {
             showFPS();

@@ -40,9 +40,7 @@ public:
         health_ += health;
     }
 
-    inline void hurt(int damage) {
-        health_ -= damage;
-    }
+    void hurt(int damage);
 
     inline int getHealth() {
         return health_;

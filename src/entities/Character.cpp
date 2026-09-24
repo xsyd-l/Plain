@@ -1,5 +1,6 @@
-#include "../include/entities/Character.hpp"
-#include "../include/core/VectorMath.hpp"
+#include "../../include/entities/Character.hpp"
+#include "../../include/core/VectorMath.hpp"
+#include "../../include/spark/Spark.hpp"
 
 Character::Character(sf::Vector2f center, sf::Vector2f halfsize, std::filesystem::path texture_path):
 Actor(center, halfsize, texture_path){}
@@ -36,6 +37,11 @@ void Character::fixedUpDate(float fixed_dt) {
 
 void Character::killed() {
 
+}
+
+void Character::hurt(int damage) {
+    spawnSpark(SparkType::damage, std::to_string(damage),interPolatePos_);
+    health_ -= damage;
 }
 
 AnimationState Character::getAnimationState() const {

@@ -1,5 +1,5 @@
-#include "../include/entities/Actor.hpp"
-#include "../include/core/VectorMath.hpp"
+#include "../../include/entities/Actor.hpp"
+#include "../../include/core/VectorMath.hpp"
 
 Actor::Actor(sf::Vector2f center, sf::Vector2f halfsize, std::filesystem::path texture_path):
 Entity(center, halfsize, MoveTag::movable), sprite_(texture_){
@@ -70,7 +70,7 @@ void Actor::toScreen(float alpha, float dt) {
     }
 
     //帧位置插值
-    sf::Vector2f interPolatePos = previous_position + alpha * (getCenter() - previous_position);
+    interPolatePos_ = previous_position + alpha * (getCenter() - previous_position);
     sprite_.setPosition(interPolatePos);
 }
 

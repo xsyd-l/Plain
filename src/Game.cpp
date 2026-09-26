@@ -39,8 +39,8 @@ void Game::run() {
     // 创建文字提示SoA
     SparkSoA sparkSoA("./fonts/AliPuHui.ttf");
     // 暴露弹幕添加指针（使用 lambda 以确保类型匹配）
-    spawnSpark = [&sparkSoA](SparkType type, std::string content) {
-        sparkSoA.spawnSpark(type, content);
+    spawnSpark = [&sparkSoA](SparkType type, std::string content, sf::Vector2f position) {
+        sparkSoA.spawnSpark(type, content, position);
     };
 
     while (window_.isOpen()) {
@@ -152,8 +152,9 @@ void Game::run() {
         sparkSoA.accumulator_ += frametime;
         while (sparkSoA.accumulator_ >= SPARK_UPDATE_DT) {
             sparkSoA.accumulator_ -= SPARK_UPDATE_DT;
-            
+            sparkSoA.updateSpark();
         }
+        sparkSoA.draw(window_);
 
         // 处理信息显示
         // 帧率和所有游戏参数相关的ui要在最顶层打印

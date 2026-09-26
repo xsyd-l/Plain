@@ -88,6 +88,35 @@ Plain_release.exe
 make clean
 ```
 
+### 3.4 构建并运行
+
+```bash
+make run
+```
+
+`make run` 会自动把 `$(SFML_BIN)`（默认 `D:/SFML-3.0.2/bin`）临时加入 `PATH`，
+因此无需事先复制 DLL；同时它始终在项目根目录启动，保证 `./texture/`、`./fonts/` 相对路径有效。
+
+如果希望 exe 能脱离终端直接双击运行，可以先把运行时 DLL 复制到项目根目录：
+
+```bash
+make dlls
+```
+
+### 3.5 生成分发包
+
+```bash
+make dist
+```
+
+会在 `dist/` 下生成 `Plain.exe` + `texture/` + `fonts/` + SFML 运行时 DLL，可直接交付测试。
+
+### 3.6 查看可用目标
+
+```bash
+make help
+```
+
 ---
 
 ## 4. 关键编译配置
@@ -96,8 +125,13 @@ make clean
 
 ```make
 CXX        = g++
-CXXFLAGS   = -Wall -Wextra -std=c++17 -g -Iinclude -ID:/SFML-3.0.2/include -MMD -MP
-LDFLAGS    = -L D:/SFML-3.0.2/lib -mconsole
+SFML_DIR  ?= D:/SFML-3.0.2
+SFML_INC  ?= $(SFML_DIR)/include
+SFML_LIB  ?= $(SFML_DIR)/lib
+SFML_BIN  ?= $(SFML_DIR)/bin
+
+CXXFLAGS   = -Wall -Wextra -std=c++17 -g -Iinclude -I$(SFML_INC) -MMD -MP
+LDFLAGS    = -L$(SFML_LIB) -mconsole
 LDLIBS     = -lsfml-graphics -lsfml-window -lsfml-system
 ```
 
@@ -107,6 +141,7 @@ LDLIBS     = -lsfml-graphics -lsfml-window -lsfml-system
 - 打开额外警告
 - 链接 SFML 图形、窗口和系统模块
 - 使用控制台模式运行（适用于开发阶段调试）
+- SFML 路径集中到 `SFML_DIR`，可用 `make SFML_DIR=<路径>` 整体覆盖
 
 ---
 
@@ -246,9 +281,15 @@ Plain/
 ## 10. 常用命令速查
 
 ```bash
-make
-make release
-make clean
+make            # debug 构建 -> Plain.exe
+make release    # release 构建 -> Plain_release.exe
+make run        # 构建并运行（自动设置 SFML DLL 搜索路径）
+make dlls       # 把 SFML 运行时 DLL 复制到项目根目录
+make dist       # 生成 dist/ 分发包
+make clean      # 删除 obj/ 与 exe
+make distclean  # clean + 删除 dist/ 与复制的 DLL
+make rebuild    # clean + all（切换分支后建议执行）
+make info       # 打印当前构建配置
 Plain.exe
 ```
 

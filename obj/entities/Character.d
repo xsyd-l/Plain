@@ -63,7 +63,15 @@ obj/entities/Character.o: src/entities/Character.cpp \
  D:/SFML-3.0.2/include/SFML/System/MemoryInputStream.hpp \
  D:/SFML-3.0.2/include/SFML/System/Sleep.hpp \
  D:/Plain/include/animation/Animation.hpp \
- D:/Plain/include/core/VectorMath.hpp
+ D:/Plain/include/core/VectorMath.hpp D:/Plain/include/spark/Spark.hpp \
+ D:/SFML-3.0.2/include/SFML/Graphics/Text.hpp \
+ D:/SFML-3.0.2/include/SFML/Graphics/PrimitiveType.hpp \
+ D:/SFML-3.0.2/include/SFML/Graphics/VertexArray.hpp \
+ D:/SFML-3.0.2/include/SFML/Graphics/Font.hpp \
+ D:/SFML-3.0.2/include/SFML/Graphics/Glyph.hpp \
+ D:/SFML-3.0.2/include/SFML/Graphics/RenderWindow.hpp \
+ D:/SFML-3.0.2/include/SFML/Graphics/RenderTarget.hpp \
+ D:/SFML-3.0.2/include/SFML/Graphics/View.hpp
 D:/Plain/include/entities/Character.hpp:
 D:/Plain/include/entities/Actor.hpp:
 D:/SFML-3.0.2/include/SFML/system/Vector2.hpp:
@@ -130,3 +138,12 @@ D:/SFML-3.0.2/include/SFML/System/MemoryInputStream.hpp:
 D:/SFML-3.0.2/include/SFML/System/Sleep.hpp:
 D:/Plain/include/animation/Animation.hpp:
 D:/Plain/include/core/VectorMath.hpp:
+D:/Plain/include/spark/Spark.hpp:
+D:/SFML-3.0.2/include/SFML/Graphics/Text.hpp:
+D:/SFML-3.0.2/include/SFML/Graphics/PrimitiveType.hpp:
+D:/SFML-3.0.2/include/SFML/Graphics/VertexArray.hpp:
+D:/SFML-3.0.2/include/SFML/Graphics/Font.hpp:
+D:/SFML-3.0.2/include/SFML/Graphics/Glyph.hpp:
+D:/SFML-3.0.2/include/SFML/Graphics/RenderWindow.hpp:
+D:/SFML-3.0.2/include/SFML/Graphics/RenderTarget.hpp:
+D:/SFML-3.0.2/include/SFML/Graphics/View.hpp:

@@ -83,7 +83,7 @@ void Actor::toScreen(float alpha, float dt) {
 
     //帧位置插值
     interPolatePos_ = previous_position + alpha * (getCenter() - previous_position);
-    sprite_.setPosition(interPolatePos);
+    sprite_.setPosition(interPolatePos_);
 }
 
 void Actor::move(sf::Vector2f velocity) {

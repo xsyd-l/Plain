@@ -15,6 +15,9 @@
  * !!!移动和加速都是时间依赖的实现
 */
 class Actor : public Entity, public Renderable {
+protected:
+    sf::Vector2f interPolatePos_;
+    
 private:
     sf::Texture texture_;
     sf::Sprite sprite_;

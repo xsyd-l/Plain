@@ -86,7 +86,8 @@ obj/Game.o: src/Game.cpp src/../include/Game.hpp \
  D:/SFML-3.0.2/include/SFML/Graphics/Shader.hpp \
  D:/SFML-3.0.2/include/SFML/Graphics/Glsl.hpp \
  D:/SFML-3.0.2/include/SFML/Graphics/Glsl.inl \
- D:/SFML-3.0.2/include/SFML/Graphics/VertexBuffer.hpp
+ D:/SFML-3.0.2/include/SFML/Graphics/VertexBuffer.hpp \
+ src/../include/spark/Spark.hpp
 src/../include/Game.hpp:
 src/../include/entities/Actor.hpp:
 D:/SFML-3.0.2/include/SFML/system/Vector2.hpp:
@@ -177,3 +178,4 @@ D:/SFML-3.0.2/include/SFML/Graphics/Shader.hpp:
 D:/SFML-3.0.2/include/SFML/Graphics/Glsl.hpp:
 D:/SFML-3.0.2/include/SFML/Graphics/Glsl.inl:
 D:/SFML-3.0.2/include/SFML/Graphics/VertexBuffer.hpp:
+src/../include/spark/Spark.hpp:

@@ -5,6 +5,8 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "../include/core/collision.hpp"
+#include "../include/spark/Spark.hpp"
+#include <functional>
 
 Game::Game(sf::RenderWindow &window):window_(window) {
     worldView_.setSize(sf::Vector2f(WORLD_WIDTH, WORLD_HEIGHT));
@@ -34,9 +36,21 @@ void Game::run() {
     renderables_.push_back(character_ptr); 
     controllers_.push_back(std::make_unique<PlayerController>(character_ptr, window_));
     
+    // 创建文字提示SoA
+    SparkSoA sparkSoA("./fonts/AliPuHui.ttf");
+    // 暴露弹幕添加指针（使用 lambda 以确保类型匹配）
+    spawnSpark = [&sparkSoA](SparkType type, std::string content, sf::Vector2f position) {
+        sparkSoA.spawnSpark(type, content, position);
+    };
+
     while (window_.isOpen()) {
         float frametime = clock_.restart().asSeconds();
         accumulator_ += frametime;
+        // frametime起作用的地点：
+        // 1、物理的帧位置插值
+        // 2、动画的帧选择
+        // 3、数字弹幕的运动状态更新
+        
         //事件处理
         while (auto event = window_.pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
@@ -134,8 +148,16 @@ void Game::run() {
         toScreen(alpha, frametime);
         draw();
 
+        // 每SPARK_UPDATE_DT的时间更新一次弹幕的运动状态，采用插值的方式
+        sparkSoA.accumulator_ += frametime;
+        while (sparkSoA.accumulator_ >= SPARK_UPDATE_DT) {
+            sparkSoA.accumulator_ -= SPARK_UPDATE_DT;
+            sparkSoA.updateSpark();
+        }
+        sparkSoA.draw(window_);
+
         // 处理信息显示
-        // 帧率和所有游戏相关的ui要在最顶层打印
+        // 帧率和所有游戏参数相关的ui要在最顶层打印
         updateFPS();
         if (show_details_) {
             showFPS();
